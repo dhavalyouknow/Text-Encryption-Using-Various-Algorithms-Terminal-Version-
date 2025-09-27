@@ -1,0 +1,11 @@
+Input
+
+=== Terminal-Based Text Encryption Tool ===
+Enter your text: Hello Linux
+Choose algorithm (caesar/vigenere/railfence): caesar
+Enter key (number for Caesar/Railfence, word for Vigenère): 3
+
+Output
+
+Encrypted Text: Khoor Olqxu
+Decrypted Text: Hello Linux
