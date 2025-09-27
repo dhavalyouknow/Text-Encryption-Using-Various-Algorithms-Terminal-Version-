@@ -1,0 +1,108 @@
+#!/usr/bin/env python3
+# Text Encryption Tool - Linux Terminal Version
+
+def caesar_encrypt(text, shift):
+    result = ""
+    for char in text:
+        if char.isalpha():
+            base = ord('A') if char.isupper() else ord('a')
+            result += chr((ord(char) - base + shift) % 26 + base)
+        else:
+            result += char
+    return result
+
+def caesar_decrypt(text, shift):
+    return caesar_encrypt(text, 26 - shift)
+
+def vigenere_encrypt(text, key):
+    result = ""
+    key = key.upper()
+    key_index = 0
+    for char in text:
+        if char.isalpha():
+            base = ord('A') if char.isupper() else ord('a')
+            shift = ord(key[key_index % len(key)]) - ord('A')
+            result += chr((ord(char) - base + shift) % 26 + base)
+            key_index += 1
+        else:
+            result += char
+    return result
+
+def vigenere_decrypt(text, key):
+    result = ""
+    key = key.upper()
+    key_index = 0
+    for char in text:
+        if char.isalpha():
+            base = ord('A') if char.isupper() else ord('a')
+            shift = ord(key[key_index % len(key)]) - ord('A')
+            result += chr((ord(char) - base - shift + 26) % 26 + base)
+            key_index += 1
+        else:
+            result += char
+    return result
+
+def railfence_encrypt(text, key):
+    rail = [''] * key
+    row = 0
+    direction = 1
+    for char in text:
+        rail[row] += char
+        row += direction
+        if row == 0 or row == key-1:
+            direction *= -1
+    return ''.join(rail)
+
+def railfence_decrypt(cipher, key):
+    n = len(cipher)
+    rail = [['\n']*n for _ in range(key)]
+    row, direction = 0, 1
+
+    for i in range(n):
+        rail[row][i] = '*'
+        row += direction
+        if row == 0 or row == key-1:
+            direction *= -1
+
+    index = 0
+    for r in range(key):
+        for c in range(n):
+            if rail[r][c] == '*' and index < n:
+                rail[r][c] = cipher[index]
+                index += 1
+
+    result = ""
+    row, direction = 0, 1
+    for i in range(n):
+        result += rail[row][i]
+        row += direction
+        if row == 0 or row == key-1:
+            direction *= -1
+    return result
+
+def main():
+    print("=== Terminal-Based Text Encryption Tool ===")
+    text = input("Enter your text: ")
+    algo = input("Choose algorithm (caesar/vigenere/railfence): ").lower()
+    key = input("Enter key (number for Caesar/Railfence, word for Vigenère): ")
+
+    if algo == "caesar":
+        shift = int(key)
+        encrypted = caesar_encrypt(text, shift)
+        decrypted = caesar_decrypt(encrypted, shift)
+    elif algo == "vigenere":
+        encrypted = vigenere_encrypt(text, key)
+        decrypted = vigenere_decrypt(encrypted, key)
+    elif algo == "railfence":
+        shift = int(key)
+        encrypted = railfence_encrypt(text, shift)
+        decrypted = railfence_decrypt(encrypted, shift)
+    else:
+        print("Algorithm not implemented!")
+        return
+
+    print("\nEncrypted Text:", encrypted)
+    print("Decrypted Text:", decrypted)
+
+if __name__ == "__main__":
+    main()
